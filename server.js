@@ -28,3 +28,51 @@ app.get('/api/notes/:id', (req, res) => {
     res.json(notes[id]);
 });
 
+app.post("/api/notes", function(req, res) {
+    var newNote = req.body;
+
+    newNote.id = notes.length;
+  
+    console.log(newNote);
+  
+    notes.push(newNote);
+
+    fs.writeFile('db/db.json', JSON.stringify(notes), function(err) {
+
+        if (err) {
+          console.log(err);
+        }
+        else {
+          console.log("Commit logged!");
+        }
+      
+      });
+    
+  
+    res.json(newNote);
+  });
+
+  app.delete('/api/notes/:id', (req, res) => {
+    const id = req.params.id;
+    for (let i = 0; i < notes.length; i++) {
+      const note = notes[i];
+      if (note.id === parseInt(id)) {
+        notes.splice(i, 1);
+      }
+    }
+    
+    fs.writeFile('db/db.json', JSON.stringify(notes), function(err) {
+
+      if (err) {
+        console.log(err);
+      }
+      else {
+        console.log("Committed!");
+      }
+    
+    });
+
+    res.json(notes);
+      
+  });
+
